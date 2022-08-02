@@ -1,0 +1,30 @@
+/* .selected {
+  background-color: #ffff00
+  display: grid;
+  align-items: center;
+  align-content:center;
+  grid-template-columns: 83% 15%;
+  margin-left: 3.5px;
+  width: 96%;
+  height: 40px;
+  border-radius: 7px;
+  padding:1%;
+  transition: .3s;
+}
+
+.not-selected {
+  display: grid;
+  align-items: center;
+  align-content:center;
+  grid-template-columns: 83% 15%;
+  margin-left: 3.5px;
+  width: 96%;
+  height: 40px;
+  border-radius: 7px;
+  padding:1%;
+  transition: .3s;
+  &&:hover {
+    background-color: #f5f5f5;
+  }
+} */
+

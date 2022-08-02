@@ -6,7 +6,9 @@ class User < ApplicationRecord
   has_many :task_lists
   has_many :tasks, through: :task_lists
 
-  validates :email, presence: { message: "Incorrect email" }
-  validates :email, uniqueness: { message: "Email belongs to another account"}
-  validates :password, presence: { message: "Incorrect password" }
+  validates :email, 
+              presence: { message: "Incorrect email" },
+              uniqueness: { message: "Email belongs to another account"}
+  validates :password, 
+              presence: { message: "Incorrect password" }
 end

@@ -3,7 +3,7 @@ class CreateAppData < ActiveRecord::Migration[6.1]
     create_table :app_data do |t|
       t.string :image
       t.string :title
-      t.text :text
+      t.string :text
 
       t.timestamps
     end

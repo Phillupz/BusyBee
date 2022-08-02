@@ -1,17 +1,9 @@
 class TasksController < ApplicationController
-  rescue_from ActiveRecord::RecordNotFound, with: :not_found
-  rescue_from ActiveRecord::RecordInvalid, with: :invalid
   
   def index
     if params[:user_id]
       user = User.find(params[:user_id])
       tasks = user.tasks
-      filtered_tasks = tasks.filter do |e|
-        if e.priority == true
-          e
-        end
-      end
-      tasks = filtered_tasks[...5].sort_by(&:created_at)
     else 
       tasks = Task.all
     end
@@ -25,13 +17,13 @@ class TasksController < ApplicationController
 
   def create
     task = Task.create(task_params)
-    render json: note, status: :created
+    render json: task, status: :created
   end
 
   def update
     task = find_task
     task.update(task_params)
-    render json: note, status: 204
+    render json: task, status: :ok
   end
 
   def destroy
@@ -41,14 +33,6 @@ class TasksController < ApplicationController
   end
 
   private
-
-  def invalid(e)
-    render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
-  end
-
-  def not_found
-    render json: { error: "Task not found" }, status: :not_found
-  end
 
   def task_params
     params.permit(:description, :checked, :priority, :task_list_id)

@@ -1,23 +1,132 @@
 import { React, useState } from "react"
+import {useHistory} from "react-router-dom"
 import styled from 'styled-components'
 
+function Signup({setShowLogin, setUser}) {
+  const history = useHistory()
+  const [errors, setErrors] = useState([])
+  const [userSignupData, setUserSignupData] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    username: "",
+    password: "",
+    password_confirmation: "",
+  })
+
+  function handleChange(e) {
+    const name = e.target.name
+    let value = e.target.value
+    setUserSignupData({
+      ...FormData,
+      [name]: value,
+    })
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    fetch("/signup", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+    },
+    body: JSON.stringify(userSignupData),
+    })
+    .then((r) => {
+      if (r.ok) {
+        r.json()
+        .then((user) => {
+          history.push("/dashboard")
+          setUser(user)
+        })
+      } else {
+        r.json().then((err) => setErrors(err.errors))
+      }
+    })
+}
+
+const errorComponents = errors.map((error) => {
+  return <ErrorLi>{error}</ErrorLi>
+})
+
+return (
+  <MainLoginCont>
+    <LoginCont>
+      <CenterCont>
+        <Image src="https://i.ibb.co/fXCYgsW/Busy-Bee-1.png"/>
+        <LoginForm onSubmit={handleSubmit}>
+          <NameCollectionCont>
+          <NameInput 
+              type="text"
+              name="firstName"
+              id="first-name"
+              placeholder="First Name"
+              value={userSignupData.first_name}
+              onChange={handleChange}
+            />
+            <NameInput 
+              type="text"
+              name="LastName"
+              id="Last-name"
+              placeholder="Last Name"
+              value={userSignupData.last_name}
+              onChange={handleChange}
+            />
+          </NameCollectionCont>
+          <LoginInput 
+            type="text"
+            name="username"
+            id="username"
+            placeholder="Email"
+            value={userSignupData.username}
+            onChange={handleChange}
+          />
+          <LoginInput
+            type="password"
+            name='password'
+            id="password"
+            placeholder="Password"
+            value={userSignupData.password}
+            onChange={handleChange} 
+          />
+          <LoginInput
+            type="password"
+            name="passwordConfirmation"
+            id="password_confirmation"
+            placeholder="Confirm Password"
+            value={userSignupData.password_confirmation}
+            onChange={handleChange} 
+          />
+          <ButtonCont>
+            <Button>Create</Button>
+          </ButtonCont>
+        </LoginForm>
+        <Button onClick={() => setShowLogin(true)}>Login</Button>
+        <ErrorUl>{errorComponents}</ErrorUl>
+      </CenterCont>
+    </LoginCont>
+  </MainLoginCont>
+ )
+}
+
 const MainLoginCont = styled.div`
-  width: 70%;
+  width: 35em;
   height: 35em;
   display: grid;
-  grid-template-columns: 40% 60%;
-  margin-top: 4.5em;
+  margin-top: 4.75em;
   margin-left:auto;
   margin-right:auto;
   position: relative;
   border: 1.5px solid black;
+  border-radius: 7px;
 `
 
 const LoginCont = styled.div`
-  height: 100%;
+  height: 99.25%;
   width: 100%;
   margin-left:auto;
   margin-right:auto;
+  max-height: 100%
 `
 
 const CenterCont = styled.div`
@@ -29,7 +138,6 @@ const CenterCont = styled.div`
 const Image = styled.img`
   margin-left:auto;
   margin-right:auto;
-  padding: 10px;
   position: relative;
   height: 12em;
   top: 10px;
@@ -46,7 +154,7 @@ const NameCollectionCont = styled.div`
   grid-template-columns: 50% 50%;
   margin-left: auto;
   margin-right: auto;
-  width: 78%;
+  width: 76%;
 `
 
 const NameInput = styled.input`
@@ -79,12 +187,20 @@ const Button = styled.button`
   background-color:white;
   border: 1px solid black;
   border-radius: 10px;
+  transition: .3s;
+  cursor:pointer;
+  &&:hover {
+    background-color: #ffff00
+  }
 `
 
 const LoginImage = styled.img`
-  margin-top: .05em;
-  height: 86.5%;
+  margin-top: .2%;
+  margin-bottom: .23%;
+  height: 99%;
   width: 100%;
+  border-top-right-radius: 7px;
+  border-bottom-right-radius: 7px;
 `
 
 const ButtonCont = styled.div`
@@ -92,96 +208,19 @@ const ButtonCont = styled.div`
   grid-auto-rows: 45px;
 `
 
-function Signup({ onLogin }) {
-  const [UserSignupData, setUserSignupData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    username: "",
-    password: "",
-    passwordConfirmation: "",
-  })
+const ErrorUl = styled.ul`
+  margin-top: 1em;
+  height: 2em;
+  width: 100%;
+  text-align:center;
+  list-style-type: none;
+`
 
-  function handleChange(e) {
-    const name = e.target.name
-    let value = e.target.value
-    setUserSignupData({
-      ...FormData,
-      [name]: value,
-    })
-  }
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    fetch("/signup", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json",
-    },
-    body: JSON.stringify(UserSignupData),
-    })
-    .then((r) => r.json())
-    .then(onLogin);
-}
-
-return (
-  <MainLoginCont>
-    <LoginCont>
-      <CenterCont>
-        <Image src="https://i.ibb.co/fXCYgsW/Busy-Bee-1.png"/>
-        <LoginForm onSubmit={handleSubmit}>
-          <NameCollectionCont>
-          <NameInput 
-              type="text"
-              name="firstName"
-              id="first-name"
-              placeholder="First Name"
-              value={UserSignupData.firstName}
-              onChange={handleChange}
-            />
-            <NameInput 
-              type="text"
-              name="LastName"
-              id="Last-name"
-              placeholder="Last Name"
-              value={UserSignupData.lastName}
-              onChange={handleChange}
-            />
-          </NameCollectionCont>
-          <LoginInput 
-            type="text"
-            name="username"
-            id="username"
-            placeholder="Email"
-            value={UserSignupData.username}
-            onChange={handleChange}
-          />
-          <LoginInput
-            type="password"
-            name='password'
-            id="password"
-            placeholder="Password"
-            value={UserSignupData.password}
-            onChange={handleChange} 
-          />
-          <LoginInput
-            type="password"
-            name="passwordConfirmation"
-            id="password_confirmation"
-            placeholder="Confirm Password"
-            value={UserSignupData.passwordConfirmation}
-            onChange={handleChange} 
-          />
-          <ButtonCont>
-            <Button>login</Button>
-            <Button>Signup</Button>
-          </ButtonCont>
-        </LoginForm>
-      </CenterCont>
-    </LoginCont>
-    <LoginImage src="https://i.ibb.co/yV3SjcW/header-image.jpg" />
-  </MainLoginCont>
- )
-}
+const ErrorLi = styled.li`
+  width: 92.5%;
+  list-style-type: none;
+  color: red;
+  font-size: 12px;
+`
 
 export default Signup

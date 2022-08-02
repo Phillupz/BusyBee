@@ -1,46 +1,56 @@
 import React, { useState, useEffect } from "react"
-import { Switch, Route } from "react-router-dom"
+import { Switch, useHistory, Route } from "react-router-dom"
 import styled from 'styled-components'
-import Home from './Home/Home.js'
-import Login from './AccountAccess/Login.js'
-import Signup from './AccountAccess/Signup.js'
+import LoginForm from './AccountAccess/LoginForm.js'
 import Dashboard from './Dashboard/Dashboard.js'
-import Note from './Notebook/Note.js'
+import TaskManager from './TaskManager/TaskManager.js'
+import Calendar from './Calendar/CalendarComp.js'
+
 
 const AppCont = styled.div`
   text-align: center;
 `
 
 function App() {
-  const [user, setUser] = useState(null);
+  const history = useHistory()
+  const [user, setUser] = useState([])
+  const [priorityTasks, setPriorityTasks] = useState([])
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [initial, setInitial] = useState("")
 
-  // useEffect(() => {
-  //   fetch("/me").then((r) => {
-  //     if (r.ok) {
-  //       r.json().then((user) => setUser(user));
-  //     }
-  //   });
-  // }, [])
-
-  console.log(user)
+  useEffect(() => {
+    fetch('/authorized_user')
+    .then((res) => {
+      if (res.ok) {
+        res.json()
+        .then((user) => {
+          setUser(user)
+          setInitial(user.first_name[0])
+          const prioritizedTasks = user.tasks.filter((task) => {
+            if (task.priority === true) {
+              return task
+            }
+          })
+          setPriorityTasks(prioritizedTasks.reverse())
+        })
+      }
+    })
+  }, [])
     
   return (
     <AppCont>
       <Switch>
-        {/* <Route exact path="/notes">
-          <Note />
-        </Route> */}
-        <Route exact path="/dashboard">
-          <Dashboard />
+        <Route exact path="/dashboard/calendar">
+          <Calendar setInitial={setInitial} initial={initial} setIsAuthenticated={setIsAuthenticated} setUser={setUser} user={user} />
         </Route>
-        <Route exact path="/signup">
-          <Signup setUser={setUser} />
+        <Route exact path="/dashboard/taskmanager">
+          <TaskManager setInitial={setInitial} initial={initial} setIsAuthenticated={setIsAuthenticated} setUser={setUser} user={user} />
+        </Route>
+        <Route exact path={"/dashboard"}>
+          <Dashboard setInitial={setInitial} initial={initial} setPriorityTasks={setPriorityTasks} priorityTasks={priorityTasks} setUser={setUser} setIsAuthenticated={setIsAuthenticated} user={user} />
         </Route>
         <Route exact path="/login">
-          <Login setUser={setUser} />
-        </Route>
-        <Route exact path="/">
-          <Home />
+          <LoginForm setIsAuthenticated={setIsAuthenticated} setUser={setUser}/>
         </Route>
       </Switch>
     </AppCont>

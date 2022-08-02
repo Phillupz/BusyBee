@@ -1,41 +1,41 @@
-import React, {useState, useEffect} from "react"
+import { React } from "react"
 import styled from "styled-components"
 import { AiFillStar } from "react-icons/ai"
-import "./Checkbox.css"
 
-const TaskItem = styled.div`
-  display: grid;
-  width: 96%;
-  height: .1em;
-  border-radius: 7px;
-  padding-top: 1em;
-  padding-bottom: 1.5em;
-  padding-left: .2em;
-  transition: .3s;
-  &&:hover {
-    background-color: #f5f5f5;
-  }
-`
-
-const DescContainer = styled.span`
-  display: grid;
-  text-align: left;
-  align-items: center;
-`
-
-function PriorityTask({}) {
- 
-  const [isShown, setIsShown] = useState(false)
-   
+function PriorityTask({task}) {
    return ( 
-    <TaskItem onMouseEnter={() => setIsShown(true)} onMouseLeave={() => setIsShown(false)}>
+    <TaskItem >
       <label class="checkbox">
-        <AiFillStar style={{color: "#ffff00"}} />
-        <DescContainer>Task Description...</DescContainer>
+        <StarCont>
+          <AiFillStar style={{color: "#ffff00"}} />
+        </StarCont>
+        <DescContainer>{task.description}</DescContainer>
       </label>
     </TaskItem>
    
    )
 }
+
+const StarCont = styled.div`
+`
+
+const TaskItem = styled.div`
+  margin-left: 10px;
+  display: grid;
+  align-content:center;
+  padding-left: 1%;
+  padding-right: 1%;
+  width: 96%;
+  height:2.5em;
+  border-radius: 7px;
+  transition: .3s;
+  &&:hover {
+    background-color: #f5f5f5;
+`
+
+const DescContainer = styled.span`
+  display: grid;
+  text-align: left;
+`
 
 export default PriorityTask

@@ -1,9 +1,48 @@
 import React from "react"
+import {useHistory} from 'react-router-dom'
 import styled from 'styled-components'
-import { AiOutlineLeft } from "react-icons/ai"
-import { AiOutlineRight } from "react-icons/ai"
-import { GiHamburgerMenu } from "react-icons/gi"
 import { AiOutlineLogout } from "react-icons/ai"
+import Sidebar from './Sidebar.js'
+import './Sidebar.css';
+
+function DashNav({initial, setIsAuthenticated, setUser}) {
+  const history = useHistory()
+
+  function handleLogout() {
+    history.push('/login')
+    fetch('/logout',{
+      method:'DELETE'
+    })
+    .then(()=>{
+        setIsAuthenticated(false)
+        setUser(null)
+    })
+  }
+
+  return (
+    <NavContainer>
+      <Logo>
+        <Sidebar />
+        <LogoImage src="https://i.ibb.co/CtjfVNP/BusyBee.png"/>
+      </Logo>
+      <MenuCont>
+        <LeftMenuCont>
+          <IconCont>
+          </IconCont>
+          <NoteName>Dashboard</NoteName>
+        </LeftMenuCont>
+        <RightMenuCont>
+          <RightButtonCont>
+            <AiOutlineLogout onClick={handleLogout} size={22}/>
+          </RightButtonCont>
+          <UserCont>
+            <User>{initial}</User>
+          </UserCont>
+        </RightMenuCont>
+      </MenuCont>
+    </NavContainer>
+  )
+}
 
 const NavContainer = styled.div`
   display: grid;
@@ -11,13 +50,12 @@ const NavContainer = styled.div`
   grid-template-columns: 5% 95%;
   height: 3.75em;
   border-bottom: 1px solid black;
-  margin-left: 8px;
-  margin-right: 8px;
 `
 
-const Logo = styled.img`
+const Logo = styled.div`
   height: 60px;
-  width: 60px;
+  width: 40px;
+  width: 100%;
 `
 const MenuCont = styled.div`
   width: 100%;
@@ -45,6 +83,7 @@ const RightButtonCont = styled.div`
   grid-gap: 10%;
   align-items: center;
   justify-content: end;
+  cursor: pointer;
 `
 
 const LeftMenuCont = styled.div`
@@ -90,30 +129,12 @@ const User = styled.p`
   border-radius: 50%;
   display: grid;
   align-content: center;
+  color:black;
 `
 
-function Navigation() {
-  return (
-    <NavContainer>
-      <Logo src="https://i.ibb.co/CtjfVNP/BusyBee.png"/>
-      <MenuCont>
-        <LeftMenuCont>
-          <IconCont>
-             <GiHamburgerMenu size={20}/>
-          </IconCont>
-          <NoteName>Dashboard</NoteName>
-        </LeftMenuCont>
-        <RightMenuCont>
-          <RightButtonCont>
-            <AiOutlineLogout size={22}/>
-          </RightButtonCont>
-          <UserCont>
-            <User>P</User>
-          </UserCont>
-        </RightMenuCont>
-      </MenuCont>
-    </NavContainer>
-  )
-}
+const LogoImage = styled.img`
+  height: 60px;
+  width: 60px;
+`
 
-export default Navigation
+export default DashNav

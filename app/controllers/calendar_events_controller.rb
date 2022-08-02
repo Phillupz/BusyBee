@@ -1,6 +1,4 @@
 class CalendarEventsController < ApplicationController
-  rescue_from ActiveRecord::RecordNotFound, with: :not_found
-  rescue_from ActiveRecord::RecordInvalid, with: :invalid
 
   def index
     if params[:user_id]
@@ -18,8 +16,14 @@ class CalendarEventsController < ApplicationController
   end
 
   def create
-    calendar_event = Calendar_event.create!(calendar_event_params)
+    calendar_event = CalendarEvent.create(calendar_event_params)
     render json: calendar_event, status: :created
+  end
+
+  def update
+    calendar_event = find_calendar_event
+    calendar_event.update(calendar_event_params)
+    render json: calendar_event, status: :ok
   end
 
   def destroy
@@ -30,20 +34,16 @@ class CalendarEventsController < ApplicationController
 
   private
 
-  def invalid(e)
-    render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
-  end
-
   def not_found
     render json: { error: "Event not found" }, status: :not_found
   end
 
   def calendar_event_params
-    params.permit(:name, :start, :end, :all_day, :user_id)
+    params.permit(:title, :start, :end, :user_id)
   end
 
   def find_calendar_event
-    calendar_event = Calendar_events.find(params[:id])
+    calendar_event = CalendarEvent.find(params[:id])
   end
 
 end

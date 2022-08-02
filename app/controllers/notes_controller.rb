@@ -1,6 +1,4 @@
 class NotesController < ApplicationController
-  rescue_from ActiveRecord::RecordNotFound, with: :not_found
-  rescue_from ActiveRecord::RecordInvalid, with: :invalid
 
   def index
     if params[:user_id]
@@ -25,7 +23,7 @@ class NotesController < ApplicationController
   def update
     note = find_note
     note.update(note_params)
-    render json: note, status: 204
+    render json: note, status: :ok
   end
 
   def destroy
@@ -36,16 +34,8 @@ class NotesController < ApplicationController
 
   private
 
-  def invalid(e)
-    render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
-  end
-
-  def not_found
-    render json: { error: "Note not found" }, status: :not_found
-  end
-
   def note_params
-    params.permit(:name, :description)
+    params.permit(:name, :text, :notebook_id)
   end
 
   def find_note

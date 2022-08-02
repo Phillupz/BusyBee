@@ -1,5 +1,4 @@
 class NotebooksController < ApplicationController
-  rescue_from ActiveRecord::RecordInvalid, with: :invalid
 
   def index
     if params[:user_id]
@@ -9,6 +8,11 @@ class NotebooksController < ApplicationController
       notebooks = Notebook.all
     end
     render json: notebooks, status: :ok
+  end
+
+  def show
+    notebook = Notebook.find(params[:id])
+    render json: notebook
   end
 
   def create
@@ -23,10 +27,6 @@ class NotebooksController < ApplicationController
   end
 
   private
-
-  def invalid(e)
-    render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
-  end
 
   def notebook_params
     params.permit(:name, :user_id)

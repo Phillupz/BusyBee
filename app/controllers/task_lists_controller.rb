@@ -1,5 +1,4 @@
 class TaskListsController < ApplicationController
-  rescue_from ActiveRecord::RecordInvalid, with: :invalid
 
   def index
     if params[:user_id]
@@ -9,6 +8,11 @@ class TaskListsController < ApplicationController
       task_lists = Task.all
     end
     render json: task_lists, status: :ok
+  end
+
+  def show
+    task_list = find_task_list
+    render json: task_list, status: :ok
   end
 
   def create
@@ -24,9 +28,6 @@ class TaskListsController < ApplicationController
 
   private
 
-  def invalid(e)
-    render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
-  end
 
   def find_task_list
     task_list = TaskList.find(params[:id])
